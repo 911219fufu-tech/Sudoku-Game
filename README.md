@@ -19,4 +19,4 @@ This is a Sudoku game built with HTML, CSS, and JavaScript.
 2. Open `index.html` in your browser.
 
 ## Contact
-For questions, please contact 911219fufu-tech.
+For questions, please contact jf5456@nyu.edu.
