@@ -1,56 +1,63 @@
-/* File:style.css
-Author: Joyce Fu
-Student ID: 923398486
-GitHub: fufu911219 */
+/* File:style.css */
+
+* {
+    box-sizing: border-box; /* 確保邊框不撐開寬度 */
+}
+
 body {
-    /* Use flexbox to center content both horizontally and vertically */
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Set the height of the body to 100% of the viewport height */
     height: 100vh;
-    /* Remove default margin to ensure the content is centered properly */
     margin: 0;
-    /* Set the background color of the body */
-    background-color: #F4CDF7; 
-}
-.container {
-    /* Center text within the container */
-    text-align: center;
-}
-/* styling to the Sudoku container */
-.sudoku-container {
-    /* Use grid layout for the Sudoku container */
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(9, 1fr);
-    /* Set the gap between grid items */
-    gap: 2px;
-    /* Set the width and height of the Sudoku container */
-    width: 300px; 
-    height: 300px;
+    background: linear-gradient(135deg, #F4CDF7 0%, #A1C4FD 100%);
+    font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
-/* styling to individual cells within the Sudoku grid */
+.sudoku-container {
+    display: grid;
+    grid-template-columns: repeat(9, 36px); /* 縮小格子寬度 */
+    grid-template-rows: repeat(9, 36px);    /* 縮小格子高度 */
+    margin: 0 auto;
+    padding: 2px;             /* <<< 把原本的 12px 縮小成 2px，讓外框緊貼 */
+    border: 2px solid #0B11B0; /* <<< 設定外圍細邊框 */
+    background-color: #0B11B0; /* 這裡作為細格線的底色 */
+    gap: 1px;                 /* 內部細線 */
+    width: fit-content;
+}
+
 .cell {
-    /* Set the width and height of each cell */
-    width: 30px;
-    height: 30px; 
-    /* Center text within each cell */
-    text-align: center;
-    line-height: 30px;
-    /* Add border to each cell */
-    border: 1px solid #0B11B0;
-    /* Set the background color of each cell */
-    background-color: #fff; 
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    font-size: 1.1em;
+    font-weight: 500;
+    color: #333;
+    outline: none;
+    border: none;
 }
-/* styling to cells marked as correct */
-.correct {
-    /* Set the background color for correct cells */
-    background-color: #C1F4A9;
+
+/* 3x3 區域的粗線（稍微加粗即可，不擋住數字） */
+.cell:nth-child(3n):not(:nth-child(9n)) {
+    border-right: 2px solid #0B11B0;
 }
-/* styling to cells marked as incorrect */
-.incorrect {
-    /* Set the background color for incorrect cells */
-    background-color: #EE4949;
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) {
+    border-bottom: 2px solid #0B11B0;
+}
+
+/* 按鈕與標題保持原樣 */
+h1 { color: #0B11B0; margin-bottom: 12px; font-size: 1.8em; }
+button {
+    background: linear-gradient(90deg, #F4CDF7 0%, #A1C4FD 100%);
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    margin: 5px;
+    color: #0B11B0;
+    cursor: pointer;
+    font-weight: 600;
 }
