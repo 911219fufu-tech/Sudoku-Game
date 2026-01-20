@@ -1,33 +1,22 @@
-<!-- File:index.html
-Author: Joyce Fu
-Student ID: 923398486
-GitHub: fufu911219 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <!-- Center the content in the viewport -->
-  <center>
-    <!-- Set the viewport for responsive design -->
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link to the external stylesheet -->
+    <title>Sudoku - Game</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Set the title of the HTML page -->
-    <title>Sudoku Game</title>
-  </head>
-  <body>
-    <!-- Display the main heading of the page -->
-    <h1>Sudoku Game</h1>
-    <!-- Container for the Sudoku game with the id "sudoku-container" -->
-    <div class="sudoku-container" id="sudoku-container"></div><br>
-    <!-- Button to check the solution, linked to the "checkSolution()" function -->
-    <button onclick="checkSolution()">Check Solution</button>
-    <!-- Button to show the solution, linked to the "showSolution()" function -->
-    <button onclick="showSolution()">Show Solution</button>
-    <!-- Include the external JavaScript file for the Sudoku game logic -->
-    <script src="sudoku.js"></script>
-  </center>
-  </body>
+</head>
+<body>
+    <div class="container" style="text-align:center; margin-top: 60px;">
+        <h1 style="font-size: 2.2rem;">Sudoku - Game</h1>
+        <div class="difficulty-buttons" style="margin-top: 40px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
+            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='easy.html'">Easy</button>
+            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='medium.html'">Medium</button>
+            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='hard.html'">Hard</button>
+            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='superhard.html'">Super Hard</button>
+        </div>
+    </div>
+</body>
 </html>
 
