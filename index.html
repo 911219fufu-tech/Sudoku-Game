@@ -61,6 +61,10 @@
     // Score display
     window.updateScore = function(score) {
         document.getElementById('score-value').textContent = score;
+        // Stop timer if score is a number (not '--')
+        if (score && score !== '--') {
+            if (typeof window.stopTimer === 'function') window.stopTimer();
+        }
     }
 
     // Timer logic
@@ -94,9 +98,9 @@
         loadSudoku(diff);
         // Reset score display
         window.updateScore('--');
-        // Reset and start timer
-        startTimer();
+        // Always allow timer to start on New Game
         timerStopped = false;
+        startTimer();
     }
 
     // Only start timer on first entry to game (not on repeated difficulty selection)
