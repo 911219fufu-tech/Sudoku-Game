@@ -155,3 +155,58 @@ function showSolution() {
 
 // Initialize on load
 createSudokuBoard();
+
+// 數字面板生成
+function createNumberPad() {
+  const pad = document.getElementById('number-pad');
+  if (!pad) return;
+  pad.innerHTML = '';
+  for (let n = 1; n <= 9; n++) {
+    const btn = document.createElement('button');
+    btn.className = 'number-btn';
+    btn.innerText = n;
+    btn.onclick = function() {
+      fillSelectedCell(n);
+    };
+    pad.appendChild(btn);
+  }
+}
+
+// 目前選中的 cell
+let selectedCell = null;
+
+// 監聽格子點擊，標記選中
+function enableCellSelection() {
+  const cells = document.querySelectorAll('.cell');
+  cells.forEach(cell => {
+    if (!cell.classList.contains('fixed')) {
+      cell.addEventListener('click', function() {
+        if (selectedCell) selectedCell.classList.remove('selected');
+        selectedCell = cell;
+        cell.classList.add('selected');
+      });
+    }
+  });
+}
+
+// 填入數字到選中格子
+function fillSelectedCell(num) {
+  if (selectedCell && selectedCell.isContentEditable) {
+    selectedCell.innerText = num;
+  }
+}
+
+// 初始化數獨盤與數字面板、格子選取
+window.addEventListener('DOMContentLoaded', () => {
+  createSudokuBoard();
+  createNumberPad();
+  enableCellSelection();
+});
+
+// 若頁面不是用 DOMContentLoaded 初始化（如直接呼叫 createSudokuBoard），也要重啟格子選取
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(() => {
+    createNumberPad();
+    enableCellSelection();
+  }, 0);
+}

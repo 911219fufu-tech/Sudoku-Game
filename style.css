@@ -81,6 +81,39 @@ button:hover {
     background: #cccccc;
 }
 
+/* 數字輸入面板樣式 */
+.number-pad {
+    margin: 18px 0 8px 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+.number-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1em;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    background: #e0e0e0;
+    color: #222;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    /* --- 加入以下程式碼來置中數字 --- */
+    display: flex;           /* 啟用彈性佈局 */
+    justify-content: center; /* 水平置中 */
+    align-items: center;     /* 垂直置中 */
+}
+.number-btn:hover {
+    background: #cccccc;
+}
+
+/* 被選中的格子高亮 */
+.cell.selected {
+    outline: 2px solid #888;
+    background-color: #d0e0ff !important;
+}
+
 button:active {
     background: #bbbbbb;
 }
