@@ -1,3 +1,89 @@
+// SudokuEngine: Generates full solution and puzzle with backtracking
+class SudokuEngine {
+  constructor() {
+    this.size = 9;
+    this.boxSize = 3;
+  }
+
+  // Generate a full valid solution using backtracking
+  generateSolution() {
+    const board = Array.from({ length: this.size }, () => Array(this.size).fill(0));
+    this._fillBoard(board, 0, 0);
+    return board;
+  }
+
+  _fillBoard(board, row, col) {
+    if (row === this.size) return true;
+    const nextRow = col === this.size - 1 ? row + 1 : row;
+    const nextCol = col === this.size - 1 ? 0 : col + 1;
+    let nums = [1,2,3,4,5,6,7,8,9];
+    for (let i = nums.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [nums[i], nums[j]] = [nums[j], nums[i]];
+    }
+    for (let num of nums) {
+      if (this._isSafe(board, row, col, num)) {
+        board[row][col] = num;
+        if (this._fillBoard(board, nextRow, nextCol)) return true;
+        board[row][col] = 0;
+      }
+    }
+    return false;
+  }
+
+  _isSafe(board, row, col, num) {
+    for (let i = 0; i < this.size; i++) {
+      if (board[row][i] === num || board[i][col] === num) return false;
+    }
+    const boxRow = Math.floor(row / this.boxSize) * this.boxSize;
+    const boxCol = Math.floor(col / this.boxSize) * this.boxSize;
+    for (let i = 0; i < this.boxSize; i++) {
+      for (let j = 0; j < this.boxSize; j++) {
+        if (board[boxRow + i][boxCol + j] === num) return false;
+      }
+    }
+    return true;
+  }
+
+  // Generate a puzzle with holes according to difficulty
+  generatePuzzle(difficulty) {
+    const solution = this.generateSolution();
+    const question = solution.map(row => row.slice());
+    let clues;
+    if (difficulty === 'easy') {
+      clues = this._randInt(40, 45);
+    } else if (difficulty === 'medium') {
+      clues = this._randInt(32, 36);
+    } else if (difficulty === 'hard') {
+      clues = this._randInt(24, 28);
+    } else {
+      clues = 36;
+    }
+    // Remove numbers until only 'clues' remain
+    let cells = [];
+    for (let i = 0; i < this.size; i++)
+      for (let j = 0; j < this.size; j++)
+        cells.push([i, j]);
+    // Shuffle cells
+    for (let i = cells.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cells[i], cells[j]] = [cells[j], cells[i]];
+    }
+    let removed = 0;
+    let toRemove = this.size * this.size - clues;
+    for (let [i, j] of cells) {
+      if (removed >= toRemove) break;
+      const backup = question[i][j];
+      question[i][j] = 0;
+      removed++;
+    }
+    return { solution, question };
+  }
+
+  _randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+}
 // File: sudoku.js
 // Author: Joyce Fu
 // Student ID: 923398486
@@ -55,32 +141,20 @@ const puzzles = [
   }
 ];
 
-// 2. Random Selection Logic
-function getRandomPuzzle() {
-  const titleElement = document.querySelector('h1');
-  const title = titleElement ? titleElement.innerText.toLowerCase() : "easy";
-  
-  let range;
-  if (title.includes('medium')) {
-    range = [3, 5]; // Indexes for Medium
-  } else if (title.includes('hard') && !title.includes('super')) {
-    range = [6, 8]; // Indexes for Hard
-  } else if (title.includes('super')) {
-    range = [9, 10]; // Indexes for Super Hard
-  } else {
-    range = [0, 2]; // Indexes for Easy (Default)
-  }
-
-  // Pick a random number between the start and end of the range
-  const randomIndex = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
-  return puzzles[randomIndex];
-}
-
-// Global variables for current game
-const selectedSet = getRandomPuzzle();
-const puzzle = selectedSet.puzzle;
-const solution = selectedSet.solution;
+// 2. Load puzzle by difficulty using SudokuEngine
+let puzzle = null;
+let solution = null;
 const container = document.getElementById('sudoku-container');
+const sudokuEngine = new SudokuEngine();
+
+function loadSudoku(diff) {
+  const { solution: sol, question } = sudokuEngine.generatePuzzle(diff);
+  puzzle = question;
+  solution = sol;
+  createSudokuBoard();
+  createNumberPad();
+  enableCellSelection();
+}
 
 // 3. Create the Sudoku Grid
 function createSudokuBoard() {
@@ -94,8 +168,8 @@ function createSudokuBoard() {
       cell.dataset.row = i;
       cell.dataset.col = j;
 
-      // 決定九大格交錯底色：左上(0,0)為淺色，奇數區塊為深色
-      // 區塊編號 = Math.floor(i/3)*3 + Math.floor(j/3)
+      // Set alternating background color for 3x3 blocks: top-left (0,0) is light, odd blocks are dark
+      // Block index = Math.floor(i/3)*3 + Math.floor(j/3)
       const blockIndex = Math.floor(i/3)*3 + Math.floor(j/3);
       if (blockIndex % 2 === 1) {
         cell.classList.add('block-dark');
@@ -104,7 +178,7 @@ function createSudokuBoard() {
       if (puzzle[i][j] !== 0) {
         cell.innerText = puzzle[i][j];
         cell.contentEditable = false;
-        cell.classList.add('fixed');
+        cell.classList.add('fixed'); // Fixed cell styling
       } else {
         cell.contentEditable = true;
       }
@@ -132,7 +206,12 @@ function checkSolution() {
       cell.classList.add('incorrect');
     }
   });
-  
+
+  // 顯示分數
+  if (window.updateScore) {
+    window.updateScore(currentMatch + ' / 81');
+  }
+
   if (currentMatch === 81) {
     alert("Congratulations! You solved it perfectly!");
   } else {
@@ -153,10 +232,9 @@ function showSolution() {
   });
 }
 
-// Initialize on load
-createSudokuBoard();
+// 初始不載入棋盤，等選難度
 
-// 數字面板生成
+// Generate number pad
 function createNumberPad() {
   const pad = document.getElementById('number-pad');
   if (!pad) return;
@@ -172,10 +250,10 @@ function createNumberPad() {
   }
 }
 
-// 目前選中的 cell
+// Currently selected cell
 let selectedCell = null;
 
-// 監聽格子點擊，標記選中
+// Listen for cell click and mark as selected
 function enableCellSelection() {
   const cells = document.querySelectorAll('.cell');
   cells.forEach(cell => {
@@ -185,25 +263,44 @@ function enableCellSelection() {
         selectedCell = cell;
         cell.classList.add('selected');
       });
+      // Real-time validation for correctness
+      cell.addEventListener('input', function() {
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
+        const val = parseInt(cell.innerText);
+        if (!isNaN(val) && val !== solution[row][col]) {
+          cell.classList.add('wrong');
+        } else {
+          cell.classList.remove('wrong');
+        }
+      });
     }
   });
 }
 
-// 填入數字到選中格子
+// Fill selected cell with number
 function fillSelectedCell(num) {
   if (selectedCell && selectedCell.isContentEditable) {
     selectedCell.innerText = num;
+    // Real-time validation for correctness
+    const row = parseInt(selectedCell.dataset.row);
+    const col = parseInt(selectedCell.dataset.col);
+    if (!isNaN(num) && num !== solution[row][col]) {
+      selectedCell.classList.add('wrong');
+    } else {
+      selectedCell.classList.remove('wrong');
+    }
   }
 }
 
-// 初始化數獨盤與數字面板、格子選取
+// Initialize sudoku board, number pad, and cell selection
 window.addEventListener('DOMContentLoaded', () => {
   createSudokuBoard();
   createNumberPad();
   enableCellSelection();
 });
 
-// 若頁面不是用 DOMContentLoaded 初始化（如直接呼叫 createSudokuBoard），也要重啟格子選取
+// If not using DOMContentLoaded (e.g., direct call to createSudokuBoard), re-enable cell selection
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
   setTimeout(() => {
     createNumberPad();

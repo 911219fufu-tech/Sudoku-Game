@@ -1,7 +1,122 @@
+/* 錯誤格子即時紅底 */
+.cell.wrong {
+    background-color: #ffdddd !important;
+    border: 2px solid #e74c3c;
+}
+/* 分數顯示區 */
+.score-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    height: 320px;
+    background: #f8f8f8;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-left: 32px;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+.score-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 18px;
+    color: #4a90e2;
+}
+.score-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #222;
+    margin-top: 12px;
+}
+.difficulty-btn.selected {
+    background: #a1c4fd;
+    color: #fff;
+    border: 2px solid #4a90e2;
+    box-shadow: 0 2px 8px rgba(161,196,253,0.15);
+}
+/* 主容器 Flexbox 佈局 */
+.main-flex-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 48px;
+    transition: gap 0.5s;
+}
+
+/* 難度選單初始置中 */
+.difficulty-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 320px;
+    transition: transform 0.7s cubic-bezier(.77,.2,.25,1), scale 0.7s;
+}
+.menu-title {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 36px;
+    transition: font-size 0.7s;
+}
+.difficulty-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.difficulty-btn {
+    font-size: 1.3rem;
+    padding: 12px 40px;
+    font-weight: bold;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    background: #e0e0e0;
+    color: #222;
+    cursor: pointer;
+    transition: background 0.2s, font-size 0.7s, padding 0.7s;
+}
+.difficulty-btn:hover {
+    background: #cccccc;
+}
+
+/* 棋盤區初始隱藏，動畫淡入滑入 */
+.sudoku-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateX(80px);
+    transition: opacity 0.7s, transform 0.7s cubic-bezier(.77,.2,.25,1);
+}
+.main-flex-container.is-playing .sudoku-panel,
+.sudoku-panel.slide-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* 難度選單滑出縮小動畫 */
+.difficulty-menu.slide-left {
+    transform: translateX(-120px) scale(0.7);
+}
+.main-flex-container.is-playing .menu-title {
+    font-size: 2.1rem;
+}
+.main-flex-container.is-playing .difficulty-btn {
+    font-size: 1.35rem;
+    padding: 14px 44px;
+}
+
+/* 棋盤區與選單同水平線 */
+.main-flex-container .sudoku-panel {
+    margin-left: 0;
+}
 /* File:style.css */
 
 * {
-    box-sizing: border-box; /* 確保邊框不撐開寬度 */
+    box-sizing: border-box; /* Ensure borders do not affect width */
 }
 
 body {
@@ -15,41 +130,41 @@ body {
 }
 
  .sudoku-container {
-    display: grid;
-    grid-template-columns: repeat(9, 36px);
-    grid-template-rows: repeat(9, 36px);
-    margin: 0 auto;
-    padding: 2px;
-    border: 2px solid #888;
-    background-color: #888;
-    gap: 1px;
-    width: fit-content;
+     display: grid;
+     grid-template-columns: repeat(9, 52px);
+     grid-template-rows: repeat(9, 52px);
+     margin: 0 auto;
+     padding: 2px;
+     border: 2px solid #888;
+     background-color: #888;
+     gap: 2px;
+     width: fit-content;
 }
 
  .cell {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #fff;
-    font-size: 1.1em;
-    font-weight: 500;
-    color: #222;
-    outline: none;
-    border: none;
+     width: 52px;
+     height: 52px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     background-color: #fff;
+     font-size: 1.7em;
+     font-weight: 500;
+     color: #222;
+     outline: none;
+     border: none;
 }
 
-/* 交錯九大格底色：深淺灰 */
+/* Alternating background color for 3x3 blocks: light and dark gray */
 .cell {
-    /* 預設淺色 */
+    /* Default light color */
     background-color: #f8f8f8;
 }
 .cell.block-dark {
     background-color: #e0e0e0;
 }
 
-/* 3x3 區域的粗線（稍微加粗即可，不擋住數字） */
+/* Bold border for 3x3 regions (slightly thicker, does not cover numbers) */
 .cell:nth-child(3n):not(:nth-child(9n)) {
     border-right: 2px solid #888;
 }
@@ -58,9 +173,9 @@ body {
     border-bottom: 2px solid #888;
 }
 
-/* 讓九大格交錯顏色（JS 會加 block-dark class） */
+/* JS will add block-dark class for alternating block colors */
 
-/* 單調風格標題與按鈕 */
+/* Monotone style for title and buttons */
 h1 {
     color: #444;
     margin-bottom: 12px;
@@ -81,34 +196,32 @@ button:hover {
     background: #cccccc;
 }
 
-/* 數字輸入面板樣式 */
+/* Number input pad styles */
 .number-pad {
     margin: 18px 0 8px 0;
     display: flex;
     justify-content: center;
     gap: 8px;
 }
-.number-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1.1em;
+ .number-btn {
+    width: 52px;
+    height: 52px;
+    font-size: 1.5em;
     border: 1px solid #bbb;
     border-radius: 6px;
     background: #e0e0e0;
     color: #222;
     cursor: pointer;
     transition: background 0.2s;
-
-    /* --- 加入以下程式碼來置中數字 --- */
-    display: flex;           /* 啟用彈性佈局 */
-    justify-content: center; /* 水平置中 */
-    align-items: center;     /* 垂直置中 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .number-btn:hover {
     background: #cccccc;
 }
 
-/* 被選中的格子高亮 */
+/* Highlight selected cell */
 .cell.selected {
     outline: 2px solid #888;
     background-color: #d0e0ff !important;

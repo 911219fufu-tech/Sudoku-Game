@@ -8,15 +8,58 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container" style="text-align:center; margin-top: 60px;">
-        <h1 style="font-size: 2.2rem;">Sudoku - Game</h1>
-        <div class="difficulty-buttons" style="margin-top: 40px; display: flex; flex-direction: column; align-items: center; gap: 20px;">
-            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='easy.html'">Easy</button>
-            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='medium.html'">Medium</button>
-            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='hard.html'">Hard</button>
-            <button style="font-size: 1.1rem; padding: 12px 32px;" onclick="location.href='superhard.html'">Super Hard</button>
+    <div class="main-flex-container">
+        <div class="difficulty-menu">
+            <h1 class="menu-title">Sudoku - Game</h1>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn" data-diff="easy">Easy</button>
+                <button class="difficulty-btn" data-diff="medium">Medium</button>
+                <button class="difficulty-btn" data-diff="hard">Hard</button>
+            </div>
+        </div>
+        <div class="sudoku-panel">
+            <!-- Sudoku grid area, initially hidden, shown after JS loads -->
+            <div class="sudoku-container" id="sudoku-container"></div>
+            <div class="number-pad" id="number-pad"></div>
+            <div class="sudoku-actions" id="sudoku-actions">
+                <button onclick="checkSolution()">Check Solution</button>
+                <button onclick="showSolution()">Show Solution</button>
+            </div>
+        </div>
+        <div class="score-panel" id="score-panel">
+            <div class="score-title">Score</div>
+            <div class="score-value" id="score-value">--</div>
         </div>
     </div>
+    <script src="sudoku.js"></script>
+    <script>
+    // Animation for switching views
+    const mainContainer = document.querySelector('.main-flex-container');
+    const menu = document.querySelector('.difficulty-menu');
+    const sudokuPanel = document.querySelector('.sudoku-panel');
+    const diffBtns = document.querySelectorAll('.difficulty-btn');
+    sudokuPanel.style.display = 'none';
+    diffBtns.forEach(btn => {
+        btn.onclick = function() {
+            // Remove selected style from all buttons
+            diffBtns.forEach(b => b.classList.remove('selected'));
+            // Highlight only the selected button
+            btn.classList.add('selected');
+            mainContainer.classList.add('is-playing');
+            menu.classList.add('slide-left');
+            sudokuPanel.style.display = 'flex';
+            setTimeout(() => {
+                sudokuPanel.classList.add('slide-in');
+            }, 50);
+            // Load puzzle for selected difficulty
+            loadSudoku(btn.dataset.diff);
+        };
+    });
+    // Score display
+    window.updateScore = function(score) {
+        document.getElementById('score-value').textContent = score;
+    }
+    </script>
 </body>
 </html>
 
