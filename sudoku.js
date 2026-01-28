@@ -93,11 +93,18 @@ function createSudokuBoard() {
       cell.className = 'cell';
       cell.dataset.row = i;
       cell.dataset.col = j;
-      
+
+      // 決定九大格交錯底色：左上(0,0)為淺色，奇數區塊為深色
+      // 區塊編號 = Math.floor(i/3)*3 + Math.floor(j/3)
+      const blockIndex = Math.floor(i/3)*3 + Math.floor(j/3);
+      if (blockIndex % 2 === 1) {
+        cell.classList.add('block-dark');
+      }
+
       if (puzzle[i][j] !== 0) {
         cell.innerText = puzzle[i][j];
         cell.contentEditable = false;
-        cell.classList.add('fixed'); // Optional: for CSS styling
+        cell.classList.add('fixed');
       } else {
         cell.contentEditable = true;
       }

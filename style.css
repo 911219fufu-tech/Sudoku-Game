@@ -10,54 +10,77 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background: linear-gradient(135deg, #F4CDF7 0%, #A1C4FD 100%);
+    background: #f5f5f5;
     font-family: 'Segoe UI', 'Arial', sans-serif;
 }
 
-.sudoku-container {
+ .sudoku-container {
     display: grid;
-    grid-template-columns: repeat(9, 36px); /* 縮小格子寬度 */
-    grid-template-rows: repeat(9, 36px);    /* 縮小格子高度 */
+    grid-template-columns: repeat(9, 36px);
+    grid-template-rows: repeat(9, 36px);
     margin: 0 auto;
-    padding: 2px;             /* <<< 把原本的 12px 縮小成 2px，讓外框緊貼 */
-    border: 2px solid #0B11B0; /* <<< 設定外圍細邊框 */
-    background-color: #0B11B0; /* 這裡作為細格線的底色 */
-    gap: 1px;                 /* 內部細線 */
+    padding: 2px;
+    border: 2px solid #888;
+    background-color: #888;
+    gap: 1px;
     width: fit-content;
 }
 
-.cell {
+ .cell {
     width: 36px;
     height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: white;
+    background-color: #fff;
     font-size: 1.1em;
     font-weight: 500;
-    color: #333;
+    color: #222;
     outline: none;
     border: none;
 }
 
+/* 交錯九大格底色：深淺灰 */
+.cell {
+    /* 預設淺色 */
+    background-color: #f8f8f8;
+}
+.cell.block-dark {
+    background-color: #e0e0e0;
+}
+
 /* 3x3 區域的粗線（稍微加粗即可，不擋住數字） */
 .cell:nth-child(3n):not(:nth-child(9n)) {
-    border-right: 2px solid #0B11B0;
+    border-right: 2px solid #888;
 }
 .cell:nth-child(n+19):nth-child(-n+27),
 .cell:nth-child(n+46):nth-child(-n+54) {
-    border-bottom: 2px solid #0B11B0;
+    border-bottom: 2px solid #888;
 }
 
-/* 按鈕與標題保持原樣 */
-h1 { color: #0B11B0; margin-bottom: 12px; font-size: 1.8em; }
+/* 讓九大格交錯顏色（JS 會加 block-dark class） */
+
+/* 單調風格標題與按鈕 */
+h1 {
+    color: #444;
+    margin-bottom: 12px;
+    font-size: 1.8em;
+}
 button {
-    background: linear-gradient(90deg, #F4CDF7 0%, #A1C4FD 100%);
-    border: none;
+    background: #e0e0e0;
+    border: 1px solid #bbb;
     border-radius: 6px;
     padding: 8px 20px;
     margin: 5px;
-    color: #0B11B0;
+    color: #222;
     cursor: pointer;
     font-weight: 600;
+    transition: background 0.2s;
+}
+button:hover {
+    background: #cccccc;
+}
+
+button:active {
+    background: #bbbbbb;
 }
