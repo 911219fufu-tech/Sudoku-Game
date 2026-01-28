@@ -22,6 +22,7 @@
             <div class="sudoku-container" id="sudoku-container"></div>
             <div class="number-pad" id="number-pad"></div>
             <div class="sudoku-actions" id="sudoku-actions">
+                <button onclick="window.newGame && window.newGame()" id="new-game-btn">New Game</button>
                 <button onclick="checkSolution()">Check Solution</button>
                 <button onclick="showSolution()">Show Solution</button>
             </div>
@@ -58,6 +59,16 @@
     // Score display
     window.updateScore = function(score) {
         document.getElementById('score-value').textContent = score;
+    }
+
+    // New Game button handler
+    window.newGame = function() {
+        // Find selected difficulty
+        const selected = document.querySelector('.difficulty-btn.selected');
+        const diff = selected ? selected.dataset.diff : 'easy';
+        loadSudoku(diff);
+        // Reset score display
+        window.updateScore('--');
     }
     </script>
 </body>
