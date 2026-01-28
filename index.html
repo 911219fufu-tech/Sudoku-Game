@@ -30,6 +30,8 @@
         <div class="score-panel" id="score-panel">
             <div class="score-title">Score</div>
             <div class="score-value" id="score-value">--</div>
+            <div class="timer-title">Time</div>
+            <div class="timer-value" id="timer-value">00:00</div>
         </div>
     </div>
     <script src="sudoku.js"></script>
@@ -61,6 +63,29 @@
         document.getElementById('score-value').textContent = score;
     }
 
+    // Timer logic
+    let timerInterval = null;
+    let timerSeconds = 0;
+    function updateTimerDisplay() {
+        const min = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
+        const sec = String(timerSeconds % 60).padStart(2, '0');
+        document.getElementById('timer-value').textContent = `${min}:${sec}`;
+    }
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerSeconds = 0;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            timerSeconds++;
+            updateTimerDisplay();
+        }, 1000);
+    }
+    function stopTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    window.stopTimer = stopTimer;
+
     // New Game button handler
     window.newGame = function() {
         // Find selected difficulty
@@ -69,7 +94,38 @@
         loadSudoku(diff);
         // Reset score display
         window.updateScore('--');
+        // Reset and start timer
+        startTimer();
+        timerStopped = false;
     }
+
+    // Only start timer on first entry to game (not on repeated difficulty selection)
+    let firstGameStarted = false;
+    let timerStopped = false;
+    diffBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (!firstGameStarted && sudokuPanel.style.display === 'flex') {
+                startTimer();
+                firstGameStarted = true;
+                timerStopped = false;
+            }
+        });
+    });
+
+    // Patch: prevent timer from restarting on repeated difficulty selection after checkSolution
+    // Only New Game or first entry can start timer
+    window.stopTimer = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = null;
+        timerStopped = true;
+    }
+    // Patch: block startTimer if timerStopped is true and not from New Game
+    const origStartTimer = startTimer;
+    function startTimerPatched() {
+        if (timerStopped) return;
+        origStartTimer();
+    }
+    startTimer = startTimerPatched;
     </script>
 </body>
 </html>
